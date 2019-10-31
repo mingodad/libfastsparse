@@ -21,7 +21,7 @@ struct BinaryCSR
   int* cols;
 };
 
-inline void free_bcsr(struct BinaryCSR* bcsr) {
+static inline void free_bcsr(struct BinaryCSR* bcsr) {
   assert(bcsr);
   free(bcsr->row_ptr);
   free(bcsr->cols);
@@ -146,7 +146,7 @@ static inline void deserialize_from_file(struct BinaryCSR* bcsr, const char* fil
 }
 
 /** y = A * x */
-inline void bcsr_A_mul_B(double* y, struct BinaryCSR *A, double* x) {
+static inline void bcsr_A_mul_B(double* y, struct BinaryCSR *A, double* x) {
   int* row_ptr = A->row_ptr;
   int* cols    = A->cols;
 #pragma omp parallel for schedule(dynamic, 256)
@@ -161,7 +161,7 @@ inline void bcsr_A_mul_B(double* y, struct BinaryCSR *A, double* x) {
 }
 
 /** Y = A * X, where Y and X have two columns and are row-ordered */
-inline void bcsr_A_mul_B2(double* Y, struct BinaryCSR *A, double* X) {
+static inline void bcsr_A_mul_B2(double* Y, struct BinaryCSR *A, double* X) {
   int* row_ptr = A->row_ptr;
   int* cols    = A->cols;
 #pragma omp parallel for schedule(dynamic, 256)
@@ -181,7 +181,7 @@ inline void bcsr_A_mul_B2(double* Y, struct BinaryCSR *A, double* X) {
 }
 
 /** Y = A * X, where Y and X have 4 columns and are row-ordered */
-inline void bcsr_A_mul_B4(double* Y, struct BinaryCSR *A, double* X) {
+static inline void bcsr_A_mul_B4(double* Y, struct BinaryCSR *A, double* X) {
   int* row_ptr = A->row_ptr;
   int* cols    = A->cols;
 #pragma omp parallel for schedule(dynamic, 256)
@@ -202,7 +202,7 @@ inline void bcsr_A_mul_B4(double* Y, struct BinaryCSR *A, double* X) {
 }
 
 /** Y = A * X, where Y and X have 8 columns and are row-ordered */
-inline void bcsr_A_mul_B8(double* Y, struct BinaryCSR *A, double* X) {
+static inline void bcsr_A_mul_B8(double* Y, struct BinaryCSR *A, double* X) {
   int* row_ptr = A->row_ptr;
   int* cols    = A->cols;
 #pragma omp parallel for schedule(dynamic, 256)
@@ -222,13 +222,13 @@ inline void bcsr_A_mul_B8(double* Y, struct BinaryCSR *A, double* X) {
   }
 }
 
-inline void bcsr_A_mul_B8_auto(double* Y, struct BinaryCSR *A, double* X) {
+static inline void bcsr_A_mul_B8_auto(double* Y, struct BinaryCSR *A, double* X) {
   int* row_ptr = A->row_ptr;
   int* cols    = A->cols;
 
 #pragma omp parallel for schedule(dynamic, 512)
   for(int row = 0; row < A->nrow; row++) {
-    double tmp0=0, tmp1=0, tmp2=0, tmp3=0, 
+    double tmp0=0, tmp1=0, tmp2=0, tmp3=0,
            tmp4=0, tmp5=0, tmp6=0, tmp7=0;
     for (int i = row_ptr[row]; i < row_ptr[row + 1]; i++) {
       int col = cols[i] * 8;
@@ -254,7 +254,7 @@ inline void bcsr_A_mul_B8_auto(double* Y, struct BinaryCSR *A, double* X) {
 }
 
 /** Y = A * X, where Y and X have <ncol> columns and are row-ordered */
-inline void bcsr_A_mul_Bn(double* Y, struct BinaryCSR *A, double* X, const int ncol) {
+static inline void bcsr_A_mul_Bn(double* Y, struct BinaryCSR *A, double* X, const int ncol) {
   int* row_ptr = A->row_ptr;
   int* cols    = A->cols;
 #pragma omp parallel
@@ -280,7 +280,7 @@ inline void bcsr_A_mul_Bn(double* Y, struct BinaryCSR *A, double* X, const int n
 }
 
 /** Y = A * X, where Y and X have <ncol> columns and are row-ordered */
-inline void bcsr_A_mul_B32n(double* Y, struct BinaryCSR *A, double* X, const int ncol) {
+static inline void bcsr_A_mul_B32n(double* Y, struct BinaryCSR *A, double* X, const int ncol) {
   assert(ncol <= 32);
   int* row_ptr = A->row_ptr;
   int* cols    = A->cols;
@@ -302,7 +302,7 @@ inline void bcsr_A_mul_B32n(double* Y, struct BinaryCSR *A, double* X, const int
 }
 
 /** y = A'A * x */
-inline void bcsr_AA_mul_B(double* y, struct BinaryCSR *A, double* x) {
+static inline void bcsr_AA_mul_B(double* y, struct BinaryCSR *A, double* x) {
   int* row_ptr = A->row_ptr;
   int* cols    = A->cols;
   const int nrow = A->nrow;
@@ -320,7 +320,7 @@ inline void bcsr_AA_mul_B(double* y, struct BinaryCSR *A, double* x) {
 
 
 /** y = A'A * x in parallel */
-inline void parallel_bcsr_AA_mul_B(double* y, struct BinaryCSR *A, double* x, double* ytmp) {
+static inline void parallel_bcsr_AA_mul_B(double* y, struct BinaryCSR *A, double* x, double* ytmp) {
   int* row_ptr = A->row_ptr;
   int* cols    = A->cols;
   const int nrow    = A->nrow;
@@ -365,7 +365,7 @@ struct CSR
   double* vals;
 };
 
-inline void free_csr(struct CSR* csr) {
+static inline void free_csr(struct CSR* csr) {
   assert(csr);
   free(csr->row_ptr);
   free(csr->cols);
@@ -422,7 +422,7 @@ static inline void new_csr(
 }
 
 /** y = A * x */
-inline void csr_A_mul_B(double* y, struct CSR *A, double* x) {
+static inline void csr_A_mul_B(double* y, struct CSR *A, double* x) {
   int* row_ptr = A->row_ptr;
   int* cols    = A->cols;
   double* vals = A->vals;
@@ -438,7 +438,7 @@ inline void csr_A_mul_B(double* y, struct CSR *A, double* x) {
 }
 
 /** Y = A * X, where Y and X have <ncol> columns and are row-ordered */
-inline void csr_A_mul_Bn(double* Y, struct CSR *A, double* X, const int ncol) {
+static inline void csr_A_mul_Bn(double* Y, struct CSR *A, double* X, const int ncol) {
   int* row_ptr = A->row_ptr;
   int* cols    = A->cols;
   double* vals = A->vals;

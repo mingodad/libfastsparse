@@ -5,18 +5,18 @@
 
 // quick sort with added vector of doubles that should be sorted as well
 
-void quickSortD(long[], long, long, double[]);
-long partitionD(long[], long, long, double[]);
-void insertionSortD(long[], long, long, double[]);
+static inline void quickSortD(long[], long, long, double[]);
+static inline long partitionD(long[], long, long, double[]);
+static inline void insertionSortD(long[], long, long, double[]);
 
-inline void quickSortD(long a[], long l, long r, double v[]) {
+static inline void quickSortD(long a[], long l, long r, double v[]) {
   if (r - l < 10) {
     insertionSortD(a, l, r, v);
     return;
   }
   long j;
 
-  if( l < r ) 
+  if( l < r )
   {
     // divide and conquer
     j = partitionD(a, l, r, v);
@@ -26,7 +26,7 @@ inline void quickSortD(long a[], long l, long r, double v[]) {
 }
 
 
-inline long partitionD(long a[], long l, long r, double v[]) {
+static inline long partitionD(long a[], long l, long r, double v[]) {
   long pivot, i, j, t;
   double td;
   t = (l+r) / 2;
@@ -39,9 +39,9 @@ inline long partitionD(long a[], long l, long r, double v[]) {
   td = v[t];
   v[t] = v[l];
   v[l] = td;
-  
+
   j = r+1;
-    
+
   while(1)
   {
     do ++i; while( a[i] <= pivot && i <= r );
@@ -55,7 +55,7 @@ inline long partitionD(long a[], long l, long r, double v[]) {
   return j;
 }
 
-inline void insertionSortD(long list[], long start, long end, double v[]) {
+static inline void insertionSortD(long list[], long start, long end, double v[]) {
   for (long x = start + 1; x <= end; x++) {
     long val = list[x];
     double td = v[x];

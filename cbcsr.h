@@ -73,7 +73,7 @@ static inline void cbcsr_from_sbm(struct ColBinaryCSR* __restrict__ A,
 }
 
 /** y = A * x */
-inline void cbcsr_A_mul_B(double* y, struct ColBinaryCSR *A, double* x) {
+static inline void cbcsr_A_mul_B(double* y, struct ColBinaryCSR *A, double* x) {
   int* row_ptr = A->row_ptr;
   int* cols    = A->cols;
   const int nrow = A->nrow;

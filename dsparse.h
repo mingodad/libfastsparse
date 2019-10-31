@@ -19,7 +19,7 @@ struct SparseDoubleMatrix
 };
 
 /** constructor, computes nrow and ncol from data */
-inline struct SparseDoubleMatrix* new_sdm(long nrow, long ncol, long nnz, int* rows, int* cols, double* vals) {
+static inline struct SparseDoubleMatrix* new_sdm(long nrow, long ncol, long nnz, int* rows, int* cols, double* vals) {
   struct SparseDoubleMatrix *A = (struct SparseDoubleMatrix*)malloc(sizeof(struct SparseDoubleMatrix));
   A->nnz  = nnz;
   A->rows = rows;
@@ -30,7 +30,7 @@ inline struct SparseDoubleMatrix* new_sdm(long nrow, long ncol, long nnz, int* r
   return A;
 }
 
-inline void sdm_transpose(struct SparseDoubleMatrix *A) {
+static inline void sdm_transpose(struct SparseDoubleMatrix *A) {
   int* tmp = A->rows;
   A->rows = A->cols;
   A->cols = tmp;
@@ -40,7 +40,7 @@ inline void sdm_transpose(struct SparseDoubleMatrix *A) {
 }
 
 /** y = A * x */
-inline void sdm_A_mul_B(double* y, struct SparseDoubleMatrix *A, double* x) {
+static inline void sdm_A_mul_B(double* y, struct SparseDoubleMatrix *A, double* x) {
   int* rows = A->rows;
   int* cols = A->cols;
   double* vals = A->vals;
@@ -51,7 +51,7 @@ inline void sdm_A_mul_B(double* y, struct SparseDoubleMatrix *A, double* x) {
 }
 
 /** y = A' * x */
-inline void sdm_At_mul_B(double* y, struct SparseDoubleMatrix *A, double* x) {
+static inline void sdm_At_mul_B(double* y, struct SparseDoubleMatrix *A, double* x) {
   int* rows = A->rows;
   int* cols = A->cols;
   double* vals = A->vals;
@@ -61,7 +61,7 @@ inline void sdm_At_mul_B(double* y, struct SparseDoubleMatrix *A, double* x) {
   }
 }
 
-inline struct SparseDoubleMatrix* read_sdm(const char *filename) {
+static inline struct SparseDoubleMatrix* read_sdm(const char *filename) {
   FILE* fh = fopen( filename, "r" );
   size_t result1, result2, result3;
   if (fh == NULL) {
@@ -90,10 +90,10 @@ inline struct SparseDoubleMatrix* read_sdm(const char *filename) {
   }
 
   return new_sdm(nrow, ncol, nnz, rows, cols, vals);
-} 
+}
 
 /** sorts SDM according to Hilbert curve */
-inline void sort_sdm(struct SparseDoubleMatrix *A) {
+static inline void sort_sdm(struct SparseDoubleMatrix *A) {
   int* rows = A->rows;
   int* cols = A->cols;
 
@@ -129,7 +129,7 @@ struct BlockedSDM {
 };
 
 /** constructor for blocked rows */
-inline struct BlockedSDM* new_bsdm(struct SparseDoubleMatrix* A, int block_size) {
+static inline struct BlockedSDM* new_bsdm(struct SparseDoubleMatrix* A, int block_size) {
   struct BlockedSDM *B = (struct BlockedSDM*)malloc(sizeof(struct BlockedSDM));
   B->nrow = A->nrow;
   B->ncol = A->ncol;
@@ -143,7 +143,7 @@ inline struct BlockedSDM* new_bsdm(struct SparseDoubleMatrix* A, int block_size)
     B->nnz[i] = 0;
   }
   B->start_row[B->nblocks] = B->nrow;
-  
+
   B->rows = (int**)malloc(B->nblocks * sizeof(int*));
   B->cols = (int**)malloc(B->nblocks * sizeof(int*));
   B->vals = (double**)malloc(B->nblocks * sizeof(double*));
@@ -173,7 +173,7 @@ inline struct BlockedSDM* new_bsdm(struct SparseDoubleMatrix* A, int block_size)
 }
 
 /** y = B * x */
-inline void bsdm_A_mul_B(double* y, struct BlockedSDM *B, double* x) {
+static inline void bsdm_A_mul_B(double* y, struct BlockedSDM *B, double* x) {
 #pragma omp parallel for schedule(dynamic, 1)
   for (int block = 0; block < B->nblocks; block++) {
     int* rows = B->rows[block];
@@ -190,7 +190,7 @@ inline void bsdm_A_mul_B(double* y, struct BlockedSDM *B, double* x) {
   }
 }
 
-inline void sort_bsdm(struct BlockedSDM *B) {
+static inline void sort_bsdm(struct BlockedSDM *B) {
   for (int block = 0; block < B->nblocks; block++) {
     int* rows = B->rows[block];
     int* cols = B->cols[block];
